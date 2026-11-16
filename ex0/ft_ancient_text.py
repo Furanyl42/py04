@@ -1,8 +1,7 @@
 import sys
-import typing
 
 
-def ft_ancient_text() -> None:
+def ft_archive_creation() -> None:
     if len(sys.argv) == 1:
         print(f"Usage: {sys.argv[0]} <file>")
         return
@@ -11,7 +10,8 @@ def ft_ancient_text() -> None:
     try:
         f = open(sys.argv[1])
         print("---")
-        print(f.read())
+        for line in f:
+            print(line.rstrip("\n"))
         print("---")
         f.close()
         print(f"File '{sys.argv[1]}' closed.")
@@ -21,4 +21,4 @@ def ft_ancient_text() -> None:
 
 
 if __name__ == "__main__":
-    ft_ancient_text()
+    ft_archive_creation()
