@@ -1,52 +1,54 @@
 def secure_archive(
     filepath: str, action: str = "r", content: str | None = None
 ) -> tuple[bool, str]:
-    match action:
-        case "r":
-            try:
-                with open(filepath, "r") as f:
-                    return (True, f.read())
-            except (
-                FileNotFoundError,
-                PermissionError,
-                IsADirectoryError,
-                OSError,
-            ) as e:
-                return (False, str(e))
-        case "w":
-            if content == None:
-                return (False, "Cannot write empty content")
-            try:
-                with open(filepath, "w") as f:
-                    f.write(content)
-                    return (True, "File written successfully")
-            except (
-                FileNotFoundError,
-                PermissionError,
-                IsADirectoryError,
-                OSError,
-            ) as e:
-                return (False, str(e))
-        case _:
-            return (False, f"Invalid action: '{action}'")
+    if action == "r":
+        try:
+            with open(filepath, "r") as f:
+                return (True, f.read())
+        except (
+            FileNotFoundError,
+            PermissionError,
+            IsADirectoryError,
+            OSError,
+            UnicodeDecodeError,
+        ) as e:
+            return (False, str(e))
+    if action == "w":
+        if content is None:
+            return (False, "Cannot write empty content")
+        try:
+            with open(filepath, "w") as f:
+                f.write(content)
+                return (True, "Content successfully written to file")
+        except (
+            FileNotFoundError,
+            PermissionError,
+            IsADirectoryError,
+            OSError,
+            UnicodeEncodeError,
+        ) as e:
+            return (False, str(e))
+    return (False, f"Invalid action: '{action}'")
 
 
 def ft_vault_security() -> None:
-    print("=== Cyber Archives Security ===\n")
+    print("=== Cyber Archives Security ===")
 
     print("Using 'secure_archive' to read from a nonexistent file:")
-    print(secure_archive("not/existing/file", "r"), end="\n\n")
+    print(secure_archive("/not/existing/file"))
 
     print("Using 'secure_archive' to read from an inaccessible file:")
-    print(secure_archive("/etc/master.passwd"), end="\n\n")
+    print(secure_archive("/etc/shadow"))
+
+    archive = "/tmp/archive_demo.txt"
+    secure_archive(archive, "w", "Archived fragment 001\n")
 
     print("Using 'secure_archive' to read from a regular file:")
-    result = secure_archive("test.txt")
-    print(result, end="\n\n")
+    result = secure_archive(archive)
+    print(result)
 
-    _, content = result
     print("Using 'secure_archive' to write previous content to a new file:")
-    print(secure_archive("newfile", "w", content))
+    print(secure_archive("/tmp/new_archive.txt", "w", result[1]))
 
 
 if __name__ == "__main__":

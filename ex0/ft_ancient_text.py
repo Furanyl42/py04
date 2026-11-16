@@ -1,24 +1,33 @@
 import sys
 
 
-def ft_archive_creation() -> None:
+def ft_ancient_text() -> None:
     if len(sys.argv) == 1:
         print(f"Usage: {sys.argv[0]} <file>")
         return
+    filename = sys.argv[1]
     print("=== Cyber Archives Recovery ===")
-    print(f"Accessing file '{sys.argv[1]}'")
+    print(f"Accessing file '{filename}'")
     try:
-        f = open(sys.argv[1])
-        print("---")
-        for line in f:
-            print(line.rstrip("\n"))
-        print("---")
-        f.close()
-        print(f"File '{sys.argv[1]}' closed.")
-    except (FileNotFoundError, PermissionError, IsADirectoryError, OSError) as e:
-        print(f"Error opening file '{sys.argv[1]}': {e}")
+        f = open(filename)
+    except (FileNotFoundError, PermissionError, IsADirectoryError,
+            OSError) as e:
+        print(f"Error opening file '{filename}': {e}")
         return
+    try:
+        content = f.read()
+    except (OSError, UnicodeDecodeError) as e:
+        print(f"Error reading file '{filename}': {e}")
+        return
+    finally:
+        f.close()
+    print("---")
+    print(content, end="")
+    if content != "" and not content.endswith("\n"):
+        print()
+    print("---")
+    print(f"File '{filename}' closed.")
 
 
 if __name__ == "__main__":
-    ft_archive_creation()
+    ft_ancient_text()
