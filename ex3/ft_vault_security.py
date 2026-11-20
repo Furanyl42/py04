@@ -1,7 +1,7 @@
 def secure_archive(
     filepath: str, action: str = "r", content: str | None = None
 ) -> tuple[bool, str]:
-    if action == "r":
+    if action in ("r", "read"):
         try:
             with open(filepath, "r") as f:
                 return (True, f.read())
@@ -12,8 +12,8 @@ def secure_archive(
             OSError,
             UnicodeDecodeError,
         ) as e:
-            return (False, str(e))
-    if action == "w":
+            return (False, f"{e}")
+    if action in ("w", "write"):
         if content is None:
             return (False, "Cannot write empty content")
         try:
@@ -27,7 +27,7 @@ def secure_archive(
             OSError,
             UnicodeEncodeError,
         ) as e:
-            return (False, str(e))
+            return (False, f"{e}")
     return (False, f"Invalid action: '{action}'")
 
 
